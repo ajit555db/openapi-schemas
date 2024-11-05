@@ -1,0 +1,84 @@
+openapi: 3.1.0
+info:
+  title: Modern API Example
+  version: 1.0.0
+  description: Demonstrates OpenAPI 3.1.0 features
+
+servers:
+  - url: https://api.example.com/v1
+
+webhooks:
+  newItem:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        '200':
+          description: Webhook processed successfully
+
+paths:
+  /items:
+    get:
+      summary: List items
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+
+components:
+  schemas:
+    Item:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        quantity:
+          type: integer
+          nullable: true  # Explicit null handling
+        tags:
+          type: array
+          items:
+            type: string
+        metadata:
+          type: [object, 'null']  # Multiple types including null
+        status:
+          enum: [active, inactive, pending]
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - price
+      additionalProperties: false
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      required:
+        - code
+        - message
